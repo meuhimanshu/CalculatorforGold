@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>XAUUSD Risk & Reward Calculator</title>
+  <title>XAUUSD Calculator</title>
+  <h3>Himanshu Singh</h3>
   <style>
     :root {
       --bg-color: #ffffff;
@@ -11,87 +12,122 @@
       --input-bg: #f9f9f9;
       --input-text: #000000;
       --primary: #4FC3F7;
+      --input-border: #bbb;
+      --input-focus-border: #4FC3F7;
       --green-default: green;
-      --green-light: #7CFC00; /* lighter green for dark mode */
+      --green-light: #7CFC00;
+      --red-default: red;
     }
     .dark-mode {
       --bg-color: #121212;
       --text-color: #f0f0f0;
       --input-bg: #1e1e1e;
       --input-text: #f0f0f0;
+      --input-border: #333;
       --green-default: var(--green-light);
+      --red-default: #ff6b6b;
+    }
+    *, *::before, *::after {
+      box-sizing: border-box;
     }
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
       background: var(--bg-color);
       color: var(--text-color);
       transition: background 0.3s, color 0.3s;
     }
     .container {
-      max-width: 400px;
+      width: 90%;
+      max-width: 480px;
       margin: 2rem auto;
-      padding: 1rem;
+      padding: 1.5rem;
+      background: var(--bg-color);
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-top: 0;
+      font-size: 1.5rem;
+      text-align: center;
     }
     .field {
-      margin-bottom: 1rem;
+      margin-bottom: 1.2rem;
     }
     .field label {
       display: block;
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.4rem;
+      font-size: 0.95rem;
     }
     .field input {
       width: 100%;
-      padding: 0.5rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+      padding: 0.75rem;
+      font-size: 1rem;
+      border: 1px solid var(--input-border);
+      border-radius: 6px;
       background: var(--input-bg);
       color: var(--input-text);
-      box-sizing: border-box;
+      transition: border-color 0.2s;
+    }
+    .field input::placeholder {
+      color: #888;
+    }
+    .field input:focus {
+      outline: none;
+      border-color: var(--input-focus-border);
     }
     .result {
-      margin-top: 1.5rem;
+      margin-top: 1.8rem;
       text-align: center;
     }
-    .result .values {
+    .values {
       display: flex;
-      justify-content: space-around;
-      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
     }
-    .result .values div {
+    .values div {
       flex: 1;
-      padding: 0.5rem;
     }
-    .result .risk {
-      font-size: 2rem;
+    .risk, .reward {
+      font-size: 2.2rem;
       font-weight: bold;
-      color: red;
     }
-    .result .reward {
-      font-size: 2rem;
-      font-weight: bold;
+    .risk {
+      color: var(--red-default);
+    }
+    .reward {
       color: var(--green-default);
     }
+    .pips {
+      margin-top: 0.2rem;
+      font-size: 0.9rem;
+      color: var(--text-color);
+    }
     .status {
-      margin-top: 0.5rem;
+      margin-top: 0.8rem;
+      font-size: 1rem;
       font-weight: bold;
-      /* default inherits text-color */
     }
     .status.optimal {
       color: var(--green-default);
     }
     .status.not-optimal {
-      color: red;
+      color: var(--red-default);
     }
     #modeToggle {
-      margin-top: 1rem;
-      padding: 0.5rem;
+      margin-top: 1.5rem;
+      padding: 0.8rem;
       width: 100%;
+      font-size: 1rem;
       border: none;
       background: var(--primary);
       color: #fff;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
+      transition: background 0.2s;
+    }
+    #modeToggle:hover {
+      background: #039be5;
     }
   </style>
 </head>
@@ -100,33 +136,33 @@
     <h2>XAUUSD Risk & Reward Calculator</h2>
     <div class="field">
       <label for="balance">Account Balance ($)</label>
-      <input type="number" id="balance" placeholder="10000" value="10000">
+      <input type="number" id="balance" placeholder="e.g. 10000" value="10000">
     </div>
     <div class="field">
       <label for="lot">Lot Size</label>
-      <input type="number" id="lot" step="0.01" placeholder="0.10" value="0.10">
+      <input type="number" id="lot" step="0.01" placeholder="e.g. 0.10" value="0.10">
     </div>
     <div class="field">
       <label for="entry">Entry Price</label>
-      <input type="number" id="entry" step="0.01" placeholder="3327.88" value="3327.88">
+      <input type="number" id="entry" step="0.01" placeholder="e.g. 3327.88" value="3327.88">
     </div>
     <div class="field">
       <label for="sl">Stop Loss Price</label>
-      <input type="number" id="sl" step="0.01" placeholder="3320.00" value="3320.00">
+      <input type="number" id="sl" step="0.01" placeholder="e.g. 3320.00" value="3320.00">
     </div>
     <div class="field">
       <label for="tp">Take Profit Price</label>
-      <input type="number" id="tp" step="0.01" placeholder="3340.00" value="3340.00">
+      <input type="number" id="tp" step="0.01" placeholder="e.g. 3340.00" value="3340.00">
     </div>
     <div class="result">
       <div class="values">
         <div>
           <div class="risk" id="riskAmt">$0.00</div>
-          <div>Pips (SL): <span id="pipSL">0</span></div>
+          <div class="pips">Pips (SL): <span id="pipSL">0</span></div>
         </div>
         <div>
           <div class="reward" id="rewardAmt">$0.00</div>
-          <div>Pips (TP): <span id="pipTP">0</span></div>
+          <div class="pips">Pips (TP): <span id="pipTP">0</span></div>
         </div>
       </div>
       <div class="status" id="status">--</div>
@@ -134,7 +170,7 @@
     <button id="modeToggle">Toggle Light/Dark Mode</button>
   </div>
   <script>
-    const contractSize = 100; // ounces per lot
+    const contractSize = 100;
     const inputs = document.querySelectorAll('input');
     inputs.forEach(i => i.addEventListener('input', calculate));
 
@@ -148,10 +184,7 @@
       const tp = parseFloat(document.getElementById('tp').value);
       const lotSize = parseFloat(document.getElementById('lot').value);
       const pipSize = 0.01;
-
-      if (isNaN(entry) || isNaN(sl) || isNaN(tp) || isNaN(lotSize) || lotSize <= 0) {
-        return;
-      }
+      if (isNaN(entry) || isNaN(sl) || isNaN(tp) || isNaN(lotSize) || lotSize <= 0) return;
 
       const pipSL = Math.abs(entry - sl) / pipSize;
       const pipTP = Math.abs(tp - entry) / pipSize;
@@ -164,14 +197,13 @@
       document.getElementById('riskAmt').textContent = '$' + riskAmount.toFixed(2);
       document.getElementById('rewardAmt').textContent = '$' + rewardAmount.toFixed(2);
       const statusEl = document.getElementById('status');
-      const statusText = 'RR Ratio: ' + rrRatio.toFixed(2) + ' → ' + (rrRatio >= 1.5 ? 'Optimal' : 'Not Optimal');
+      const statusText = 'RR: ' + rrRatio.toFixed(2) + (rrRatio >= 1.5 ? ' Optimal' : ' Not Optimal');
       statusEl.textContent = statusText;
-      statusEl.classList.remove('optimal', 'not-optimal');
-      statusEl.classList.add(rrRatio >= 1.5 ? 'optimal' : 'not-optimal');
+      statusEl.classList.toggle('optimal', rrRatio >= 1.5);
+      statusEl.classList.toggle('not-optimal', rrRatio < 1.5);
     }
 
     calculate();
   </script>
 </body>
 </html>
-
